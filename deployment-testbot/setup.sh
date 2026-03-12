@@ -31,6 +31,14 @@ fi
 
 echo "Flutter: $(flutter --version --no-version-check 2>&1 | head -1)"
 
+# Install Rust (required by flutter_rust_bridge)
+if ! command -v cargo &> /dev/null; then
+  echo "Installing Rust..."
+  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable
+fi
+source "$HOME/.cargo/env"
+echo "Cargo: $(cargo --version)"
+
 # Install dependencies and run code generation
 echo "Installing dependencies..."
 cd "$APP_DIR"

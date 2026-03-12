@@ -37,7 +37,7 @@ jobs:
           github_token: ${{ steps.app-token.outputs.token }}
 
           target_setup_command: "./deployment-testbot/setup.sh"
-          target_ready_check_command: "curl -f http://localhost:53317/api/localsend/v2/info"
+          target_ready_check_command: "curl -fk https://localhost:53317/api/localsend/v2/info"
           target_ready_check_timeout: 60
 
           test_directory: "tests"

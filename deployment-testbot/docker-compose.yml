@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  flagsmith:
+    image: flagsmith/flagsmith:latest
+    container_name: testbot-flagsmith
+    ports:
+      - "8080:8000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:flagsmith@postgres:5432/flagsmith
+      - DJANGO_ALLOWED_HOSTS=*
+      - ENV=production
+      - DJANGO_SECRET_KEY=test-secret-key-change-in-production
+      - ALLOW_ADMIN_INITIATION_VIA_CLI=true
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+
+  postgres:
+    image: postgres:15
+    container_name: testbot-flagsmith-postgres
+    environment:
+      - POSTGRES_PASSWORD=flagsmith
+      - POSTGRES_DB=flagsmith
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
